@@ -1,4 +1,5 @@
 import uuid
+from datetime import datetime
 from db import Base
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -9,3 +10,5 @@ class User(Base):
     name: Mapped[str]
     email: Mapped[str]
     password: Mapped[str]
+    online: Mapped[bool]
+    logged_at: Mapped[datetime]
