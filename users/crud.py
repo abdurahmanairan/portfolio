@@ -1,5 +1,5 @@
 import jwt
-from fastapi import HTTPException
+from fastapi import HTTPException, WebSocket
 from passlib.context import CryptContext
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -7,6 +7,7 @@ from .models import User
 from .schema import *
 from base_schema import *
 from config import settings
+from .userbot import Client
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")             #Создание экземпляра модуля хэширования, шифрования и 
                                                                               #проверки паролей
@@ -51,3 +52,9 @@ async def auth(user: UserAuth, db: AsyncSession):
             status_code=401,
             detail="Not authorized" 
         )
+    
+async def connect(websocket: WebSocket, db: AsyncSession):
+    client = Client(
+        websocket=websocket,
+        db=db
+    )

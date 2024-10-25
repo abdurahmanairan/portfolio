@@ -9,7 +9,7 @@ class UserAuth(BaseModel):
     email: str
     password: str
 
-class User(BaseModel):
+class UserBase(BaseModel):
     id: str
     name: str
     email: str
