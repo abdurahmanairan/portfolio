@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from .schema import *
 from base_schema import *
-from crud import *
+from .crud import *
 from db import get_db
 
 users_router = APIRouter()
@@ -18,3 +18,8 @@ async def user_list(db: AsyncSession = Depends(get_db)):
 @users_router.post('/auth')
 async def auth(user: UserAuth, db: AsyncSession = Depends(get_db)):
     return await auth(user, db)
+
+@users_router.websocket('/ws')
+async def websocket_connect(id:str, websocket: WebSocket, 
+                            db: AsyncSession = Depends(get_db)):
+    return await connect(id, websocket, db)

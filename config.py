@@ -1,7 +1,7 @@
 from smtplib import SMTP
 from pydantic_settings import BaseSettings
 from enum import Enum
-from redis import Redis
+from redis.asyncio import Redis
 
 class Settings(BaseSettings):
     authjwt_secret_key: str = "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
@@ -35,4 +35,4 @@ redis = Redis(
 )
 
 class DBSettings:
-    SQLALCHEMY_DATABASE_URL = f"mysql+aiomysql://{settings.DB_USER}:{settings.DB_PASSWORD}@{settings.DB_HOST}/{settings.DB_NAME}"
+    SQLALCHEMY_DATABASE_URL = "sqlite+aiosqlite:///db.db"

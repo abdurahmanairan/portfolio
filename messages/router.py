@@ -1,8 +1,8 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, WebSocket
 from sqlalchemy.ext.asyncio import AsyncSession
 from .schema import *
 from base_schema import *
-from crud import *
+from .crud import *
 from db import get_db
 
 messages_router = APIRouter()

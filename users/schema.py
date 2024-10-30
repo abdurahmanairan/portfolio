@@ -13,3 +13,7 @@ class UserBase(BaseModel):
     id: str
     name: str
     email: str
+
+class MessageBase(BaseModel):
+    text: str
+    recipient: str

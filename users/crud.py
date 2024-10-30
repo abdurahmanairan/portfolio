@@ -1,4 +1,5 @@
 import jwt
+import pickle
 from fastapi import HTTPException, WebSocket
 from passlib.context import CryptContext
 from sqlalchemy import select
@@ -6,8 +7,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from .models import User
 from .schema import *
 from base_schema import *
-from config import settings
-from .userbot import Client
+from config import settings, redis
+from .userbot import manager
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")             #Создание экземпляра модуля хэширования, шифрования и 
                                                                               #проверки паролей
@@ -53,8 +54,5 @@ async def auth(user: UserAuth, db: AsyncSession):
             detail="Not authorized" 
         )
     
-async def connect(websocket: WebSocket, db: AsyncSession):
-    client = Client(
-        websocket=websocket,
-        db=db
-    )
+async def connect(id: str, websocket: WebSocket, db: AsyncSession):
+    await manager.connect(id, websocket, db)
