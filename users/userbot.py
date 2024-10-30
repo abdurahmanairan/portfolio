@@ -46,7 +46,6 @@ class Client:
     async def _init_connection(self):
         while True:
             data = await self._socket.receive_json()
-            await self._socket.send_json("Hello!")
             message = MessageBase.model_validate(data)
             await redis.publish(
                 message.recipient, 
@@ -65,7 +64,6 @@ class Client:
         self._redis_listen = asyncio.create_task(self._messages_listen())
         await self._init_conn
         await self._messages_listen()
-
 
     async def send_message(self, message):
         await self._socket.send_json(message)
