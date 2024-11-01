@@ -1,10 +1,12 @@
 import asyncio
-import time
+import uuid
 import json
+from datetime import datetime
 from fastapi import WebSocket
 from sqlalchemy.ext.asyncio import AsyncSession
 from .schema import MessageBase
 from config import redis
+from messages.models import Message
 
 class ConnectionManager:
     def __init__(self):
@@ -47,6 +49,15 @@ class Client:
         while True:
             data = await self._socket.receive_json()
             message = MessageBase.model_validate(data)
+            message_save = Message(
+                id=str(uuid.uuid4()),
+                text=message.text,
+                sender=self._id,
+                recipient=message.recipient,
+                time=datetime.now()
+            )
+            self._db.add(message_save)
+            await self._db.commit()
             await redis.publish(
                 message.recipient, 
                 json.dumps(message.model_dump())
