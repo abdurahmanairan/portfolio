@@ -1,4 +1,53 @@
 <!DOCTYPE html>
 <html>
-    Hello!
+    <head>
+        <title>Demo Chat App</title>
+        <link rel="stylesheet" href="style.css">
+    </head>
+        
+    <body>
+        <div class="login">
+            <h1>Login</h1>
+            <form action="">
+                <label for="email">
+                    Email:
+                </label>
+                <input type="text" name="email" id="email" 
+                placeholder="Enter your email" required>
+                <label for="password">
+                    Password:
+                </label>
+                <input type="password" name="password" id="password" 
+                placeholder="Enter your password" required>
+                <div class="wrap">
+                    <button type="submit" onclick="login(document.getElementById('email'), document.getElementById('password'))">
+                        Sign in
+                    </button>
+                </div>
+            </form>   
+            <p>Not registered?
+                <a href="#" style="text-decoration: none;">
+                    Create an account
+                </a>
+            </p>   
+        </div>
+        <script>
+            function login(email, password) {
+                const obj = {
+                    "email": email,
+                    "password": password
+                }
+                fetch('http://citymultibot.kbncran.ru/api/v1/users/auth', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(obj)
+                })
+                .then(response => response.json())
+                .then(response => alert(JSON.stringify(response)))
+            }
+        </script>
+    </body>
 </html>
