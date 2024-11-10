@@ -6,3 +6,6 @@ class MessageBase(BaseModel):
     text: str
     time: datetime
     recipient: str
+
+    class Config:
+        from_attributes = True

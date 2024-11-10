@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+            Your chats
+        </title>
+    </head>
+
+    <body>
+        <ul id='messages'>
+        </ul>
+        <form action="" onsubmit="sendMessage(event)">
+                <input type="text" id="messageText" autocomplete="off"/>
+                <input type='text' id="recipient" autocomplete="off"/>
+                <button>Send</button>
+            </form>
+        <div id="chatList">
+            <script>
+                fetch('http://localhost:8000/api/v1/messages', {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': 'Bearer ' + localStorage.getItem('jwt')
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(response => {
+                            if (response.msg == "No messages") {
+                                let list = document.getElementById('chatList');
+                                list.innerHTML = `No messages`;
+                            } else {
+                                for (const message of response) {
+                                    var messages = document.getElementById('messages')
+                                    var message1 = document.createElement('li')
+                                    var content = document.createTextNode(message.text)
+                                    message1.appendChild(content)
+                                    messages.appendChild(message1)
+                                }
+                            }
+                        }
+                    )
+                console.log(localStorage.getItem('jwt'))
+                var ws = new WebSocket("ws://localhost:8000/api/v1/users/ws?token=" + localStorage.getItem('jwt'));
+                ws.onmessage = function(event) {
+                    var messages = document.getElementById('messages')
+                    var message = document.createElement('li')
+                    var content = document.createTextNode(event.data)
+                    message.appendChild(content)
+                    messages.appendChild(message)
+                };
+                function sendMessage(event) {
+                    console.log(localStorage.getItem('jwt'))
+                    var input = document.getElementById("messageText")
+                    var recipient = document.getElementById("recipient")
+                    console.log(input.value)
+                    ws.send(
+                        JSON.stringify(
+                            {
+                                "text": input.value,
+                                "recipient": recipient.value
+                            }
+                        )
+                    )
+                    input.value = ''
+                    event.preventDefault()
+                }
+            </script>
+        </div>
+    </body>
+</html>

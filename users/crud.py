@@ -22,15 +22,15 @@ async def create(user: UserCreate, db: AsyncSession):
     await db.commit()
     return Created
 
-async def get_all(db: AsyncSession):
-    users_query = await db.execute(select(User))
-    users = users_query.scalars().all()
-    return [User.model_validate(user) for user in users]
+async def get(id: str, db: AsyncSession):
+    users_query = await db.execute(select(User).where(User.id == id))
+    user = users_query.scalars().first()
+    return UserBase.model_validate(user)
 
 async def auth(user: UserAuth, db: AsyncSession):
     user_query = await db.execute(select(User))
     credentials = user_query.scalars().first()
-    if user != None:
+    if credentials != None:
         if pwd_context.verify(user.password, credentials.password):
             token = jwt.encode(
                 {"id": credentials.id},
@@ -41,7 +41,8 @@ async def auth(user: UserAuth, db: AsyncSession):
                 "id": credentials.id,
                 "name": credentials.name,
                 "email": credentials.email,
-                "access_token": token
+                "access_token": token,
+                "msg": "OK"
             }
         else:
             raise HTTPException(
