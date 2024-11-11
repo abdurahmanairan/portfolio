@@ -1,7 +1,7 @@
 import uuid
 from datetime import datetime
 from db import Base
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 class User(Base):
     __tablename__ = "users"
@@ -12,3 +12,5 @@ class User(Base):
     password: Mapped[str]
     online: Mapped[bool] = mapped_column(nullable=True)
     logged_at: Mapped[datetime] = mapped_column(nullable=True)
+
+    messages = relationship("Message")

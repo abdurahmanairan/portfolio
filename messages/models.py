@@ -2,7 +2,7 @@ import uuid
 from datetime import datetime
 from db import Base
 from sqlalchemy import ForeignKey
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 class Message(Base):
     __tablename__ = "messages"
@@ -12,3 +12,5 @@ class Message(Base):
     sender: Mapped[str] = mapped_column(ForeignKey('users.id'))
     recipient: Mapped[str] = mapped_column(ForeignKey('users.id'))
     time: Mapped[datetime]
+
+    user = relationship("User")
