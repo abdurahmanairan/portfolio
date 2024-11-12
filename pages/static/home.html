@@ -16,13 +16,24 @@
             </form>
         <div id="chatList">
             <script>
-                fetch('http://localhost:8000/api/v1/messages', {
+                if (localStorage.getItem('jwt') == null) {
+                    window.location.href = "/";
+                } else {
+                    fetch('http://localhost:8000/api/v1/messages', {
                         method: 'GET',
                         headers: {
                             'Authorization': 'Bearer ' + localStorage.getItem('jwt')
                         }
                     })
-                    .then(response => response.json())
+                    /* .then(response => {
+                            if (response.status == 401) {
+                                window.location.href = "/";
+                            }
+                        }
+                    ) */
+                    .then(
+                        response => response.json()
+                    )
                     .then(response => {
                             if (response.msg == "No messages") {
                                 let list = document.getElementById('chatList');
@@ -38,15 +49,16 @@
                             }
                         }
                     )
-                console.log(localStorage.getItem('jwt'))
-                var ws = new WebSocket("ws://localhost:8000/api/v1/users/ws?token=" + localStorage.getItem('jwt'));
-                ws.onmessage = function(event) {
-                    var messages = document.getElementById('messages')
-                    var message = document.createElement('li')
-                    var content = document.createTextNode(event.data)
-                    message.appendChild(content)
-                    messages.appendChild(message)
-                };
+                    console.log(localStorage.getItem('jwt'))
+                    var ws = new WebSocket("ws://localhost:8000/api/v1/users/ws?token=" + localStorage.getItem('jwt'));
+                    ws.onmessage = function(event) {
+                        var messages = document.getElementById('messages')
+                        var message = document.createElement('li')
+                        var content = document.createTextNode(event.data)
+                        message.appendChild(content.json())
+                        messages.appendChild(message)
+                    };
+                }
                 function sendMessage(event) {
                     console.log(localStorage.getItem('jwt'))
                     var input = document.getElementById("messageText")

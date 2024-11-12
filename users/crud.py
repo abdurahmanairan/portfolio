@@ -9,6 +9,7 @@ from .schema import *
 from base_schema import *
 from config import settings, redis
 from .userbot import manager
+from messages.models import Message
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")             #Создание экземпляра модуля хэширования, шифрования и 
                                                                               #проверки паролей
@@ -54,6 +55,17 @@ async def auth(user: UserAuth, db: AsyncSession):
             status_code=401,
             detail="Not authorized" 
         )
-    
+
+async def get_chats(id: str, db: AsyncSession):
+    users_query = await db.execute(
+        select(User)
+        .join(Message, User.id == Message.sender)
+        .where(User.id == id)
+    )
+    users = users_query.scalars().all()
+    if users == []:
+        return {"msg": "No chats"}
+    return [UserBase.model_validate(user) for user in users]
+
 async def connect(id: str, websocket: WebSocket, db: AsyncSession):
     await manager.connect(id, websocket, db)

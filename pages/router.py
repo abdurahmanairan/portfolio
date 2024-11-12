@@ -16,3 +16,7 @@ async def login(request: Request):
 @templates_router.get('/home', response_class=HTMLResponse)
 async def home(request: Request):
     return templates.TemplateResponse("static/home.html", {"request": request})
+
+@templates_router.get('/register', response_class=HTMLResponse)
+async def home(request: Request):
+    return templates.TemplateResponse("static/register.html", {"request": request})

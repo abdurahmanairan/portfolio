@@ -22,6 +22,12 @@ async def user_list(db: AsyncSession = Depends(get_db)):
 async def login(user: UserAuth, db: AsyncSession = Depends(get_db)):
     return await auth(user, db)
 
+@users_router.get('/chats')
+async def chats(db: AsyncSession = Depends(get_db),
+                token: HTTPAuthorizationCredentials = Depends(bearer)):
+    id = await authorize(token.credentials, db)
+    return await get_chats(id, db)
+
 @users_router.websocket('/ws')
 async def websocket_connect(websocket: WebSocket, token: str,
                             db: AsyncSession = Depends(get_db)):

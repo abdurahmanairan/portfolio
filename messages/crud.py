@@ -4,13 +4,13 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 from .models import Message
 from .schema import *
+from users.models import User
 from base_schema import *
 from config import settings
 
 async def get_all(id: str, db: AsyncSession):
     msg_query = await db.execute(
-        select(Message).where(Message.sender == id)
-        .options(selectinload(Message.user))
+        select(Message).where(Message.sender == id or Message.recipient == id)
     )
     msgs = msg_query.scalars().all()
     if msgs == []:

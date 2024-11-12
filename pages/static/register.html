@@ -1,17 +1,21 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Demo Chat App</title>
-        <link rel="stylesheet" type="text/css" href="style.css">
+        <title>
+            Register
+        </title>
     </head>
-        
+
     <body>
-        <div class="login">
-            <h1>Login</h1>
-            <form action="javascript:login()">
+        <div class="register">
+            <h1>Register</h1>
+            <form action="javascript:register()">
                 <label for="email">
                     Email:
                 </label>
+                <input type="text" name="name" id="name" 
+                placeholder="Enter your name" required autocomplete="off"/>
+                <label for="password">
                 <input type="text" name="email" id="email" 
                 placeholder="Enter your email" required autocomplete="off"/>
                 <label for="password">
@@ -19,7 +23,7 @@
                 </label>
                 <input type="password" name="password" id="password" 
                 placeholder="Enter your password" required autocomplete="off"/>
-                <button>Sign in</button>
+                <button>Sign up</button>
             </form> 
             <!-- <div class="wrap">
                 <button type="submit" onclick="login(document.getElementById('email').value, document.getElementById('password').value)">
@@ -27,21 +31,19 @@
                 </button>
             </div>   -->
             <p>Not registered?
-                <a href="register" style="text-decoration: none;">
+                <a href="#" style="text-decoration: none;">
                     Create an account
                 </a>
             </p>   
         </div>
         <script>
-            if (localStorage.getItem('jwt') != null) {
-                window.location.href = "home";
-            }
-            function login() {
+            function register() {
                 const obj = {
+                    "name": document.getElementById('name').value,
                     "email": document.getElementById('email').value,
                     "password": document.getElementById('password').value
                 }
-                fetch('http://localhost:8000/api/v1/users/auth', {
+                fetch('http://localhost:8000/api/v1/users', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -50,11 +52,10 @@
                 })
                 .then(response => response.json())
                 .then(response => {
-                        if (response.msg == "OK") {
-                            localStorage.setItem('jwt', response.access_token)
-                            window.location.href = "home";
+                        if (response.msg == "Created") {
+                            window.location.href = "/";
                         } else {
-                            alert("Invalid login or password")
+                            alert("Something happened wrong")
                         }
                     }
                 )
